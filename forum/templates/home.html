@@ -1,2 +1,77 @@
 {% extends "base.html" %}
-{% block body %}{% endblock %}
+{% block body %}
+
+<div class="col-xs-12 col-sm-9">
+          <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>
+          <div class="jumbotron">
+            <h1>Witaj!</h1>
+            <p>Aby utworzyć nowy wątek musisz się zalogować. Jeśli jeszcze nie masz konta, zarejestruj się.</p>
+          </div>
+
+    <h1>Najpopularniejsze wątki.</h1>
+    {% for category in categories %}
+          <div class="row">
+            <div class="col-6 col-sm-6 col-lg-12">
+              <div class="panel panel-success">
+                  <div class="panel-heading">
+                    {{category.name}}
+                    </div>
+                    <div class="panel-body">
+                        <ul class="media-list">
+                          <li class="media">
+                            <a class="pull-left" href="#">
+                              <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="...">
+                            </a>
+                            <div class="media-body">
+                              <h4 class="media-heading"><a href="#">Tytuł wątku pierwszego</a> </h4>
+                              <h6>Dodane przez <span class="badge badge-xs">UserAbcd</span>, 1 stycznia 2014</h6>
+                              Treść wątku nr 1. Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.
+                                Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
+                                 <span class="glyphicon glyphicon-thumbs-up">12 </span> <span class="glyphicon glyphicon-thumbs-down">10</span>
+                            </div>
+                          </li>
+                        </ul>
+
+                        <ul class="media-list">
+                          <li class="media">
+                            <a class="pull-left" href="#">
+                              <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="...">
+                            </a>
+                            <div class="media-body">
+                              <h4 class="media-heading"> <a href="#">Tytuł wątku drugiego</a> </h4>
+                              <h6>Dodane przez <span class="badge badge-xs">UserAbcd</span>, 1 stycznia 2014</h6>
+                              Treść wątku nr 2. Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.
+                                Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
+                                 <span class="glyphicon glyphicon-thumbs-up">12 </span> <span class="glyphicon glyphicon-thumbs-down">10</span>
+                            </div>
+                          </li>
+                        </ul>
+
+                        <ul class="media-list">
+                          <li class="media">
+                            <a class="pull-left" href="#">
+                              <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="...">
+                            </a>
+                            <div class="media-body">
+                              <h4 class="media-heading"> <a href="#">Tytuł wątku trzeciego</a> </h4>
+                              <h6>Dodane przez <span class="badge badge-xs">UserAbcd</span>, 1 stycznia 2014</h6>
+                              Treść wątku nr 3. Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo.
+                                Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.
+                                 <span class="glyphicon glyphicon-thumbs-up">12 </span> <span class="glyphicon glyphicon-thumbs-down">10</span>
+                            </div>
+                          </li>
+                        </ul>
+
+                    </div>
+              </div>
+             </div><!--/span-->
+
+
+
+          </div><!--/row-->
+    {% endfor %}
+        </div><!--/span-->
+
+{% endblock %}

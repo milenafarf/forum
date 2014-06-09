@@ -2,8 +2,6 @@ from django.db import models
 
 class User(models.Model):
     login = models.CharField(max_length = 64)
-    firstname = models.CharField(max_length = 64)
-    lastname = models.CharField(max_length = 64)
     email = models.EmailField(max_length=64)
     password = models.CharField(max_length=64)
     date_created = models.DateTimeField(auto_now_add=True) #Automatically set the field to now
@@ -17,15 +15,22 @@ class Category(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
-class Forum(models.Model):
-    name = models.CharField(max_length = 64)
-    desc = models.CharField(max_length = 256) #short description of forum
+
+class Thread(models.Model):
+    title = models.CharField(max_length = 64)
+    content = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)
+    thumbs_up = models.IntegerField()
+    thumbs_down = models.IntegerField()
+
 
 class Message(models.Model):
     content = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    forum = models.ForeignKey(Forum)
+    thumbs_up = models.IntegerField()
+    thumbs_down = models.IntegerField()
+    thread = models.ForeignKey(Thread)
+    user = models.ForeignKey(User)
