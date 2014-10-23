@@ -26,7 +26,7 @@
                               <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="...">
                             </a>
                             <div class="media-body">
-                              <h4 class="media-heading"><a href="#">{{ t.title }}</a> </h4>
+                              <h4 class="media-heading"><a href="{% url 'thread' t.id %}">{{ t.title }}</a> </h4>
                               <h6>Dodane przez <span class="badge badge-xs">{{t.user}}</span>, {{t.date_created}}</h6>
                               {{t.content}}
                                  <span class="glyphicon glyphicon-thumbs-up">12 </span>

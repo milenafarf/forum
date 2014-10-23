@@ -22,13 +22,33 @@ def home(request):
     return HttpResponse(template.render(context))
 
 def found(request):
+    # if 'key' in request.GET:
+    #      message = 'You searched for: %r' % request.GET['key']
+    # else:
+    #     message = 'You submitted an empty form.'
+    # return HttpResponse(message)
     order_by = request.GET.get('order_by', '-date_created')
-    key = request.GET.get('key', '')
-    threads = Thread.objects.filter(Q(title__contains=key) | Q(content__contains=key)).order_by(
-        order_by)
+    key = request.GET.get('key')
+    if key != '' :
+        threads = Thread.objects.filter(Q(title__contains=key) | Q(content__contains=key)).order_by(
+        '-date_created')
+        message = 'Wyszukiwanie dla tekstu: %s' % request.GET['key']
+    else:
+        threads = []
+        message = 'Wpisz tekst, ktory chcesz znalezc'
     template = loader.get_template('found.html')
     context = RequestContext(request, {
         'threads': threads,
+        'message': message,
+    })
+    return HttpResponse(template.render(context))
+
+def thread(request, id=-1):
+    if id != -1:
+        thread = Thread.objects.filter(id=id)
+    template = loader.get_template('thread.html')
+    context = RequestContext(request, {
+        'thread': thread,
     })
     return HttpResponse(template.render(context))
 
