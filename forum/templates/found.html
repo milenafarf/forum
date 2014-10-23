@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block body %}
+
+
+
+        <div class="row">
+            <div class="col-6 col-sm-6 col-lg-12">
+              <div class="panel panel-success">
+                    <div class="panel-body">
+                        <ul class="media-list">
+                          {%for t in threads%}
+                          <li class="media">
+
+                            <div class="media-body">
+                              <h4 class="media-heading"><a href="#">{{ t.title }}</a> </h4>
+                              <h6>Dodane przez <span class="badge badge-xs">{{t.user}}</span>, {{t.date_created}}</h6>
+                              {{t.content}}
+                                 <!--<span class="glyphicon glyphicon-thumbs-up">12 </span> <span class="glyphicon glyphicon-thumbs-down">10</span> -->
+                            </div>
+                          </li>
+                             {%endfor%}
+                        </ul>
+                        </div>
+
+
+              </div>
+             </div><!--/span-->
+          </div><!--/row-->
+
+{% endblock %}
