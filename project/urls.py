@@ -13,7 +13,9 @@ urlpatterns = patterns('',
     url(r'^$', views.home, name='home'),
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^new_thread/', views.new_thread, name='new_thread'),
-    url(r'^found/', views.found, name='found'),
+    url(r'^found/$', views.found, name='found'),
+    url(r'^thread/(?P<id>[a-z\d]+)/$', views.thread, name='thread'),
+   # url(r'^thread/$', views.thread, name='thread'),
     # url(r'^project/', include('project.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
