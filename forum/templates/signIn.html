@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="media">
+    <div class="media-body">
+      <form class="form-signin" role="form" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Podaj dane do logowania</h2>
+        <!--<input id ="login" type="text" class="form-control" placeholder="login" required="" autofocus="">-->
+        <!--<input id = "password" type="text" class="form-control" placeholder="hasło" required="">-->
+        {{ form.login }}
+        {{ form.password }}
+        <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
+          <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Zapamiętaj mnie
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj się</button>
+      </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
+{% endblock %}

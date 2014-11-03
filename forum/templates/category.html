@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>Przeglądaj wątki w kategorii <b>{{threads.0.category.name}}</b> </h1>
+    {% for t in threads%}
+        {{t.title}}
+    {%endfor%}
+{% endblock %}
+
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
+{% endblock %}

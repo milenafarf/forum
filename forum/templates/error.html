@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Coś poszło nie tak...</strong> Strona której szukasz, nie istnieje</div>
+{% endblock %}
+
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
+{% endblock %}
