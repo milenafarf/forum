@@ -5,10 +5,12 @@
     <div class="media-body">
       <form class="form-signin" role="form" method="post">
         {% csrf_token %}
-        <h2 class="form-signin-heading">Podaj dane do logowania</h2>
+        <h2 class="form-signin-heading">Logowanie</h2>
         <!--<input id ="login" type="text" class="form-control" placeholder="login" required="" autofocus="">-->
         <!--<input id = "password" type="text" class="form-control" placeholder="hasło" required="">-->
+        <label for="id_login">Login:</label>
         {{ form.login }}
+        <label for="id_haslo">Hasło:</label>
         {{ form.password }}
         <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
           <div class="checkbox">

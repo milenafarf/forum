@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="media">
+    <div class="media-body">
+      <form class="form-signup" role="form" method="post">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Rejestracja</h2>
+        <label for="id_login">Login:</label>
+        {{ form.login }}
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+        <label for="id_password">Hasło:</label>
+        {{ form.password }}
+        <label for="id_confirmpassword">Powtórz hasło:</label>
+        {{ form.confirmpassword }}
+        <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Zarejestruj się</button>
+      </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
+{% endblock %}

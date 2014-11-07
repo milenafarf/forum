@@ -30,3 +30,10 @@
           </div><!--/row-->
 
 {% endblock %}
+
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
+{% endblock %}

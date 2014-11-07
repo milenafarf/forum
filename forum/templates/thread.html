@@ -2,9 +2,65 @@
 
 {% block body %}
 
-{% for t in thread%}
-       {{t.content}}
-{% endfor %}
 
+                <!-- aaaaaaaa -->
+<div class="media">
+
+      <a class="pull-left" href="#">
+        <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;">
+      </a>
+
+      <div class="media-body">
+        <h4 class="media-heading">title: {{thread.title}}</h4>
+        content: {{thread.content}}
+        <p>
+             <a href="#"><span class="badge badge-green">Odpowiedz</span></a>
+             <span class="glyphicon glyphicon-lg glyphicon-thumbs-up ">12 </span>
+        </p>
+
+          <!--formularz do odpowiedzi-->
+        <div class="media">
+          <div class="media-body">
+            <form class="form-respons" role="form" method="post">
+                <!--<textarea rows="4" type="text" class="form-control" required="" autofocus="" name="key"></textarea>-->
+                <!--<p><button class="btn btn-primary btn-sm" type="submit">odpowiedz</button></p>-->
+
+                {% csrf_token %}
+                {{ form }}
+                 <input type="submit" class="btn btn-primary btn-sm" value="Odpowiedz">
+            </form>
+          </div>
+        </div>
+            liczba odpowiedzi: {{ thread.response|length }}qqqqqqqqqqqqqqqqqqqqq
+          {% for r in thread.response %}
+
+          <div class="panel panel-default">
+  <div class="panel-body">
+          <div class="media">
+
+            <a class="pull-left" href="#">
+            <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+" style="width: 64px; height: 64px;">
+          </a>
+
+          <div class="media-body">
+
+            <h4 class="media-heading">aaaaaaaaaa {{r.user.email}}</h4>
+            {{r.content}}
+            Odpowiedział(a): {{r.user}}
+
+          </div>
+          </div>
+      </div></div>
+          {% endfor %}
+      </div>
+</div>
+
+{% endblock %}
+
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
 {% endblock %}
 

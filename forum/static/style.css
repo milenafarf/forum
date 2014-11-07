@@ -12,18 +12,15 @@ body {
   margin: 0 auto;
 }
 
-.form-signin input[id="id_login"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[id="id_password"] {
+.form-signin input[id] {
   margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 
-.form-signin .form-control {
+.form-signup input[id] {
+  margin-bottom: 10px;
+}
+
+.form-signin .form-control, .form-signup .form-control {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;

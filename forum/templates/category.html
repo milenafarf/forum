@@ -2,7 +2,10 @@
 {% block body %}
     <h1>Przeglądaj wątki w kategorii <b>{{threads.0.category.name}}</b> </h1>
     {% for t in threads%}
-        {{t.title}}
+        tytul: {{t.title}} ||
+        content: {{t.content}} ||
+        user: {{t.user}}
+        <br/>
     {%endfor%}
 {% endblock %}
 

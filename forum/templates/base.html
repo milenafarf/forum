@@ -2,10 +2,14 @@
 <html>
 <head>
   <title>Forum internetowe | {% block title %}{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="http://getbootstrap.com/examples/offcanvas/offcanvas.css">
+
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css"/>
 </head>
+
 <body>
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -13,8 +17,6 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="{% url 'home' %}"> <span class="glyphicon glyphicon-home"></span></a>
         </div>
-
-
 
         <div class="col-md-5">
             <form class="navbar-form navbar-left" role="search" action="{% url 'found' %}" >
@@ -27,12 +29,14 @@
         </div>
 
 
-
-
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Logowanie</a></li>
-            <li><a href="#">Rejestracja</a></li>
+            {% if request.session.user %}
+            <li><button type="button" class="btn btn-success navbar-btn">Zalogowany użytkownik: {{request.session.login}} </button></li>
+            {% else %}
+            <li><a href="{% url 'signIn' %}">Logowanie</a></li>
+            <li><a href="{% url 'signUp' %}">Rejestracja</a></li>
+            {% endif %}
           </ul>
         </div><!--/.navbar-collapse -->
       </div>

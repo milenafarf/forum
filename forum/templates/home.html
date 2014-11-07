@@ -7,12 +7,20 @@
           </p>
           <div class="jumbotron">
             <h1>Witaj!</h1>
-            <br/>
-            <a href="{% url 'new_thread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a>
+              {% if request.session.user %}
+              <p>Dodawaj wątki, odpowiadaj na pytania, oceniaj wpisy. Jeśli masz jakieś sugestie, chciałbyć zaproponować zmiany,
+              skontaktuj się z adminem.</p>
+               <a href="{% url 'newThread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a>
+              {% else %}
+              <p>Aby móc dodawać wątki, odpowiadać bądź oceniać, musisz się <a href="{% url 'signIn' %}">zalogować</a>.</p>
+               <p>Jeśli jesteś tu po raz pierwszy, <a href="{% url 'signUp' %}">zarejestruj się</a>. </p>
+              {% endif %}
+
+
           </div>
-     <!--<p><a href="{% url 'new_thread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a></p>-->
+     <!--<p><a href="{% url 'newThread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a></p>-->
     <h1>Najnowsze wątki.</h1>
-     {%for t in threads%}
+    {%for t in threads%}
           <div class="row">
             <div class="col-6 col-sm-6 col-lg-12">
               <div class="panel panel-success">
@@ -51,16 +59,8 @@
 {% block cat %}
 
     {% for c in categories%}
-    <li><a href="#">{{c.name}}</a></li>
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
     {%endfor%}
 
 {% endblock %}
 
-{% block popular %}
-<li><a href="#">aaaaaaaaaa</a></li>
-    {% for p in popular %}
-    <li><a href="#">{{p.content}}</a></li>
-
-    {%endfor%}
-
-{% endblock %}
