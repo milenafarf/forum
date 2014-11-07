@@ -12,6 +12,16 @@ body {
   margin: 0 auto;
 }
 
+.form-thread {
+  max-width: 430px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-thread input[id] {
+  margin-bottom: 10px;
+}
+
 .form-signin input[id] {
   margin-bottom: 10px;
 }
@@ -20,7 +30,7 @@ body {
   margin-bottom: 10px;
 }
 
-.form-signin .form-control, .form-signup .form-control {
+.form-signin .form-control, .form-signup .form-control, .form-thread .form-control {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;

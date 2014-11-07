@@ -8,12 +8,11 @@ from django.core.exceptions import ObjectDoesNotExist
 class ThreadForm(forms.ModelForm):
     class Meta:
         model=Thread
-        fields=('title','content','category', 'user')
+        fields=('title','content','category')
         labels={
             'title': ('tytul'),
             'content': ('tresc'),
             'category': ('kategoria'),
-            'user': ('uzytkownik'),
         }
 
 class UserForm1(forms.ModelForm):
@@ -24,7 +23,6 @@ class UserForm1(forms.ModelForm):
                                                           'placeholder': 'login', 'required': '', 'autofocus':''}))
     password = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password',
                                                              'placeholder': 'haslo', 'required': ''}))
-
 
 class UserForm2(forms.ModelForm):
     class Meta:

@@ -3,8 +3,13 @@
 <head>
   <title>Forum internetowe | {% block title %}{% endblock %}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+
+
   <link rel="stylesheet" href="http://getbootstrap.com/examples/offcanvas/offcanvas.css">
 
   <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}style.css"/>
@@ -31,11 +36,35 @@
 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            {% if request.session.user %}
-            <li><button type="button" class="btn btn-success navbar-btn">Zalogowany użytkownik: {{request.session.login}} </button></li>
+            {% if request.session.login %}
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Zalogowany użytkownik: {{request.session.login}} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Edytuj dane</a></li>
+                    <li><a href="#">Powiadomienia</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Wyloguj się</a></li>
+                </ul>
+            </li>
+
             {% else %}
             <li><a href="{% url 'signIn' %}">Logowanie</a></li>
             <li><a href="{% url 'signUp' %}">Rejestracja</a></li>
+            {% endif %}
+
+            {% if request.session.admin %}
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Panel admina <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Użytkownicy</a></li>
+                    <li><a href="#">Zgłoszone wątki</a></li>
+                    <li><a href="#">Wiadomości</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Edytuj dane</a></li>
+                    <li><a href="#">Wyloguj się</a></li>
+                </ul>
+            </li>
             {% endif %}
           </ul>
         </div><!--/.navbar-collapse -->

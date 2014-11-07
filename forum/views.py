@@ -122,19 +122,17 @@ def newThread(request):
     if request.method == 'POST': # If the form has been submitted...
         form = ThreadForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
-            # form.save()
-            usr = User.objects.get(login=form.cleaned_data['user'])
-            # cat = Category.objects.get(name=form.cleaned_data['category'])
+            usr = User.objects.get(login= request.session['login'])
             thread = Thread(
                 title= form.cleaned_data['title'],
                 content = form.cleaned_data['content'],
                 category = form.cleaned_data['category'],
-                user = form.cleaned_data['user'],
+                user = usr,
                 response = [],
                 rating = []
             )
             thread.save()
-            return HttpResponseRedirect('home.html') # Redirect after POST
+            return HttpResponseRedirect('/thread/' + str(thread.id)) # Redirect after POST
     else:
         form = ThreadForm() # An unbound form
     categories = Category.objects.all()
@@ -160,14 +158,15 @@ def signUp(request):
                 #     return redirect('/success.html', request)
                 try:
                     message = "Login lub haslo juz istnieja w bazie"
-                    us1 = User.objects.get(login=form.data['login'])
-                    us2 = User.objects.get(login=form.data['email'])
+                    us1 = User.objects.filter(login=form.data['login'])
+                    us2 = User.objects.filter(login=form.data['email'])
                 except:
                     message = 'Rejestracja przebiegla pomyslnie!'
                     form.save()
                     return redirect('/signUp/success/', request, {'message': message})
             else:
                 message = "hasla sie nie zgadzaja"
+
             return render(request, 'signUp.html', {'form': form, 'categories': categories,'message': message})
     else:
         form = UserForm2()
@@ -193,6 +192,8 @@ def signIn(request):
                 return render(request, 'signIn.html', {'form': form, 'categories': categories,'message': message})
             request.session['user'] = str(us.id)
             request.session['login'] = str(us.login)
+            if us.type == "admin":
+                request.session['admin'] = str(us.login)
             # request.session['type'] = us.type
             return HttpResponseRedirect('/')
     # if a GET (or any other method) we'll create a blank form

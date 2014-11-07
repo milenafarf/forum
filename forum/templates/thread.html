@@ -11,7 +11,14 @@
       </a>
 
       <div class="media-body">
-        <h4 class="media-heading">title: {{thread.title}}</h4>
+        <h3 class="media-heading">title: {{thread.title}}
+            <div class="btn-group">
+              <button type="button" class="btn btn-default btn-sm">  <span class="glyphicon glyphicon-edit"></span>
+              Edytuj </button>
+              <button type="button" class="btn btn-default btn-sm">  <span class="glyphicon glyphicon-remove"></span>
+              Usuń </button>
+            </div>
+        </h3>
         content: {{thread.content}}
         <p>
              <a href="#"><span class="badge badge-green">Odpowiedz</span></a>
