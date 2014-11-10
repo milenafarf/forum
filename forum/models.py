@@ -4,12 +4,14 @@ from django.db import models
 from djangotoolbox.fields import ListField, EmbeddedModelField
 from django_mongodb_engine.contrib import MongoDBManager
 
+userChoices = ( ('admin', 'admin'),
+                ('user', 'user'),)
 
 class User(models.Model):
     login = models.CharField(max_length = 64)
     email = models.EmailField(max_length=64)
     password = models.CharField(max_length=64)
-    type = models.CharField(default="user", max_length = 5) # type = {user, admin}
+    type = models.CharField(default="user", max_length = 5, choices=userChoices) # type = {user, admin}
     date_created = models.DateTimeField(auto_now_add=True) #Automatically set the field to now
                                     # when the object is first created. Useful for creation of timestamps
     last_update = models.DateTimeField(auto_now=True)

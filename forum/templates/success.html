@@ -1,5 +1,16 @@
 {% extends "base.html" %}
-
 {% block body %}
-<div class="alert alert-success" role="alert">{{ message }}</div>
+        <div class="alert alert-success" role="alert">
+            <strong>Wszystko OK! </strong>
+            {{ message }}
+        </div>
+
+
+{% endblock %}
+
+
+{% block cat %}
+    {% for c in categories%}
+    <li><a href="{% url 'category' c.id %}">{{c.name}}</a></li>
+    {%endfor%}
 {% endblock %}

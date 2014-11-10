@@ -23,6 +23,7 @@ class UserForm1(forms.ModelForm):
                                                           'placeholder': 'login', 'required': '', 'autofocus':''}))
     password = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password',
                                                              'placeholder': 'haslo', 'required': ''}))
+    ban = forms.BooleanField(required=False)
 
 class UserForm2(forms.ModelForm):
     class Meta:
@@ -37,6 +38,28 @@ class UserForm2(forms.ModelForm):
         }
     confirmpassword = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password',
                                                             'placeholder': 'powtorz haslo','required': ''}))
+
+class UserFormEdit(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=('login', 'email', 'password')
+        widgets = {
+            'login': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'login', 'required': '', 'autofocus':''}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'email',
+                                                            'type': 'email', 'required': ''}),
+            'password': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'haslo',
+                                                            'type': 'password', 'required': ''})
+        }
+
+class UserFormAdmin(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=('login', 'email', 'ban', 'type')
+        widgets = {
+            'login': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'login', 'required': '', 'autofocus':''}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'email',
+                                                            'type': 'email', 'required': ''}),
+        }
 
 class ResponseForm(forms.ModelForm):
     class Meta:

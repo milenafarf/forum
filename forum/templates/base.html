@@ -41,10 +41,10 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Zalogowany użytkownik: {{request.session.login}} <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Edytuj dane</a></li>
+                    <li><a href="{% url 'editUser' %}">Edytuj dane</a></li>
                     <li><a href="#">Powiadomienia</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">Wyloguj się</a></li>
+                    <li><a href="{% url 'logOut' %}">Wyloguj się</a></li>
                 </ul>
             </li>
 
@@ -57,7 +57,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Panel admina <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Użytkownicy</a></li>
+                    <li><a href="{% url 'usersAdmin' %}">Użytkownicy</a></li>
                     <li><a href="#">Zgłoszone wątki</a></li>
                     <li><a href="#">Wiadomości</a></li>
                     <li class="divider"></li>

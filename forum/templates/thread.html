@@ -21,7 +21,7 @@
         </h3>
         content: {{thread.content}}
         <p>
-             <a href="#"><span class="badge badge-green">Odpowiedz</span></a>
+             {% if session.request.login %}<a href="#"><span class="badge badge-green">Odpowiedz</span></a> {% endif %}
              <span class="glyphicon glyphicon-lg glyphicon-thumbs-up ">12 </span>
         </p>
 

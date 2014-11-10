@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">Zarządzaj użytkownikami</div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+        <tr>
+            <td></td>
+            <td><b>login</b></td>
+            <td><b>email</b></td>
+            <td><b>ban</b></td>
+            <td><b>typ</b></td>
+            <td><b>edytuj</b></td>
+            <td><b>usuń</b></td>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for u in users %}
+        <tr>
+            <td></td>
+            <td width="30%">{{ u.login }}</td>
+            <td width="30%">{{ u.email }}</td>
+            <td width="10%">{{ u.ban }}</td>
+            <td width="10%">{{ u.type }}</td>
+            <td><a href="{% url 'editUser' u.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td>
+              <a href="{% url 'delUser' u.id %}" class="btn"><span class="glyphicon glyphicon-remove"></span></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+<nav>
+    <ul class="pager">
+
+        {% if users.has_previous %}
+        <li><a href="?page={{ users.previous_page_number }}">previous</a></li>
+        {% endif %}
+
+        <span class="current">
+        Strona {{ users.number }} z {{ users.paginator.num_pages }}.
+        </span>
+
+        {% if users.has_next %}
+        <li><a href="?page={{ users.next_page_number }}">next</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+
+
+{% endblock %}

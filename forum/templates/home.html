@@ -7,7 +7,7 @@
           </p>
           <div class="jumbotron">
             <h1>Witaj!</h1>
-              {% if request.session.user %}
+              {% if request.session.login %}
               <p>Dodawaj wątki, odpowiadaj na pytania, oceniaj wpisy. Jeśli masz jakieś sugestie, chciałbyć zaproponować zmiany,
               skontaktuj się z adminem.</p>
                <a href="{% url 'newThread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a>
@@ -20,18 +20,6 @@
           </div>
      <!--<p><a href="{% url 'newThread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a></p>-->
 
-    <div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
-    Dropdown
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-  </ul>
-</div>
 
     <h1>Najnowsze wątki.</h1>
     {%for t in threads%}

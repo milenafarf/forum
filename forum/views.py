@@ -10,6 +10,8 @@ from forum.models import Thread, Response
 from django.shortcuts import render_to_response, redirect
 from django.db.models import Q
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from django_mongodb_engine.contrib import MongoDBManager
 from bson.objectid import ObjectId
 from django.forms.util import ErrorList
@@ -18,7 +20,7 @@ from django.forms.util import ErrorList
 
 def home(request):
     template = loader.get_template('home.html')
-    threads = Thread.objects.order_by('-date_created')
+    threads = Thread.objects.order_by('-date_created')[:10]
     categories = Category.objects.all()
     popular = Thread.objects.order_by('rating', 'date_created')
     context = RequestContext(request, {
@@ -74,12 +76,12 @@ def thread(request, id=-1):
         form = ResponseForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # form.save()
-            thr = Thread.objects.get(id=id)    # find Thread
             cont = form.cleaned_data['content']      # get content or response
-            u_id = form.cleaned_data['user']
-            u= User.objects.get(login='moj_login')
+            if 'login' in request.session:
+                lg = request.session['login']
+            else:
+                HttpResponseRedirect('/error/2/')
+            u= User.objects.get(login=lg)
             resp = Response(
                 user= u,
                 content = cont
@@ -141,29 +143,38 @@ def newThread(request):
         'categories' : categories,
     })
 
+def delThread(request, id):
+    if 'login' in request.session:
+        lg = request.session['login']
+    else:
+        HttpResponseRedirect('/error/2/')
+    try:
+        thrd = Thread.objects.get(id=id)
+        usr = User.objects.get(login = lg)
+    except:
+        HttpResponseRedirect('/error/1/')
+    if usr.type == 'admin':
+        thrd.delete()
+    elif usr.lg == thrd.user.id:
+        thrd.delete()
+    else:
+        HttpResponseRedirect('/error/2/')
+    HttpResponseRedirect('/success/3/')
+
 def signUp(request):
     categories = Category.objects.all()
-    message =''
+    message = ""
     if request.method == 'POST':
         form = UserForm2(request.POST)
         if form.is_valid():
             password = form.cleaned_data["password"]
             confirmpassword=form.cleaned_data["confirmpassword"]
             if password == confirmpassword:
-                # us1 = User.objects.get(login=form.data['login'])
-                # us2 = User.objects.get(login=form.data['email'])
-                # if us1 is None and us2 is None:
-                #     message = ''
-                #     form.save()
-                #     return redirect('/success.html', request)
-                try:
+                if User.objects.filter(login=form.data['login']) or User.objects.filter(email=form.data['email']):
                     message = "Login lub haslo juz istnieja w bazie"
-                    us1 = User.objects.filter(login=form.data['login'])
-                    us2 = User.objects.filter(login=form.data['email'])
-                except:
-                    message = 'Rejestracja przebiegla pomyslnie!'
+                else:
                     form.save()
-                    return redirect('/signUp/success/', request, {'message': message})
+                    return HttpResponseRedirect('/success/2')
             else:
                 message = "hasla sie nie zgadzaja"
 
@@ -190,10 +201,12 @@ def signIn(request):
             except:
                 message = "Wprowadzono niepoprawne dane."
                 return render(request, 'signIn.html', {'form': form, 'categories': categories,'message': message})
-            request.session['user'] = str(us.id)
+            request.session['userId'] = str(us.id)
             request.session['login'] = str(us.login)
             if us.type == "admin":
                 request.session['admin'] = str(us.login)
+            if not form.cleaned_data['ban']:
+                request.session.set_expiry(0)
             # request.session['type'] = us.type
             return HttpResponseRedirect('/')
     # if a GET (or any other method) we'll create a blank form
@@ -201,9 +214,63 @@ def signIn(request):
         form = UserForm1()
     return render(request, 'signIn.html', {'form': form, 'categories': categories, 'message': message})
 
-def success(request):
-    message = request.GET.get('message')
+def editUser(request):
+    if 'userId' in request.session:
+        usr = request.session['userId']
+        us = User.objects.get(id=usr)
+    else:
+        return HttpResponse('/error/2/')
+    form = UserForm2(request.POST or None, instance=us)
+    if form.is_valid():
+        form.save()
+        return redirect('/success/1/')
+    else:
+        return render_to_response('editUser.html', RequestContext(request, {'form': form}))
+
+def delUser(request, id):
+    if 'admin' in request.session:
+        try:
+            usr = User.objects.get(id=id)
+            usr.delete()
+            return HttpResponseRedirect('/success/3')
+        except User.DoesNotExist:
+            return HttpResponseRedirect('/error/1')
+    else:
+        return HttpResponseRedirect('/error/2')
+
+def logOut(request):
+    if 'userId' and 'login' in request.session:
+        del request.session["userId"]
+        del request.session["login"]
+        request.session.modified = True
+    if 'admin' in request.session:
+        del request.session['admin']
+        request.session.modified = True
+    return redirect('/')
+
+def success(request, msg):
+    message = ""
+    if msg == '1':
+        message = "Dane zostaly zmienione."
+    if msg == '2':
+        message = "Rejestracja sie powiodla."
+    if msg == '3':
+        message = "Usunieto dane."
     template = loader.get_template('success.html')
+    categories = Category.objects.all()
+    context = RequestContext(request, {
+        'categories': categories,
+        'message': message
+    })
+    return HttpResponse(template.render(context))
+
+def error(request, msg):
+    message = ""
+    if msg == '1':
+        message = "Wystapil blad."
+    if msg =='2':
+        message = "Brak uprawnien."
+    template = loader.get_template('error.html')
     categories = Category.objects.all()
     context = RequestContext(request, {
         'categories': categories,
