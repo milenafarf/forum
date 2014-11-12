@@ -39,8 +39,23 @@
           </div><!--/row-->
         {%endfor%}
 
+    <!--page navigation-->
+    <nav>
+    <ul class="pager">
 
+        {% if threads.has_previous %}
+        <li><a href="?page={{ threads.previous_page_number }}">previous</a></li>
+        {% endif %}
 
+        <span class="current">
+        Strona {{ threads.number }} z {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if threads.has_next %}
+        <li><a href="?page={{ threads.next_page_number }}">next</a></li>
+        {% endif %}
+    </ul>
+  </nav>
 
 
 {% endblock %}

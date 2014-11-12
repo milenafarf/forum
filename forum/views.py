@@ -9,7 +9,6 @@ from forum.forms import ThreadForm, UserForm1, UserForm2, ResponseForm
 from forum.models import Thread, Response
 from django.shortcuts import render_to_response, redirect
 from django.db.models import Q
-from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django_mongodb_engine.contrib import MongoDBManager
@@ -59,8 +58,18 @@ def category(request, id):
     try:
         c = Category.objects.get(id=id)
     except Category.DoesNotExist:
-        raise Http404
-    threads = Thread.objects.filter(category__id=id).order_by('-date_created')
+        return HttpResponseRedirect('/error/1/')
+    threadsList = Thread.objects.filter(category__id=id).order_by('-date_created')
+    paginator = Paginator(threadsList, 25)
+    page = request.GET.get('page')
+    try:
+        threads = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        threads = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        threads = paginator.page(paginator.num_pages)
     categories = Category.objects.all()
     context = RequestContext(request, {
         'threads': threads,
@@ -81,7 +90,10 @@ def thread(request, id=-1):
                 lg = request.session['login']
             else:
                 HttpResponseRedirect('/error/2/')
-            u= User.objects.get(login=lg)
+            try:
+                u= User.objects.get(login=lg)
+            except User.DoesNotExis:
+                HttpResponseRedirect('/error/2/')
             resp = Response(
                 user= u,
                 content = cont
@@ -216,8 +228,11 @@ def signIn(request):
 
 def editUser(request):
     if 'userId' in request.session:
-        usr = request.session['userId']
-        us = User.objects.get(id=usr)
+        try:
+            usr = request.session['userId']
+            us = User.objects.get(id=usr)
+        except User.DoesNorExist:
+            return HttpResponseRedirect('/error/1/')
     else:
         return HttpResponse('/error/2/')
     form = UserForm2(request.POST or None, instance=us)
@@ -225,7 +240,7 @@ def editUser(request):
         form.save()
         return redirect('/success/1/')
     else:
-        return render_to_response('editUser.html', RequestContext(request, {'form': form}))
+        return render_to_response('editUser.html', RequestContext(request, {'form': form, 'user': us}))
 
 def delUser(request, id):
     if 'admin' in request.session:
@@ -267,7 +282,7 @@ def success(request, msg):
 def error(request, msg):
     message = ""
     if msg == '1':
-        message = "Wystapil blad."
+        message = "Wystapil blad podczas pobierania dnaych z bazy."
     if msg =='2':
         message = "Brak uprawnien."
     template = loader.get_template('error.html')

@@ -3,16 +3,17 @@
 {% block body %}
     <div class="media">
     <div class="media-body">
+        {% if user.ban%}<div class="alert alert-danger" role="alert"><b>Uwaga!</b> Użytkownik zablokowany.</div> {%endif%}
       <form class="form-signup" role="form" method="post">
         {% csrf_token %}
         <h2 class="form-signin-heading">Edycja danych</h2>
-        <!--<label for="id_login">Login:</label>-->
+        <label for="id_login">Login:</label>
         {{ form.login }}
-        <!--<label for="id_email">Email:</label>-->
+        <label for="id_email">Email:</label>
         {{ form.email }}
-        <!--<label for="id_password">Hasło:</label>-->
+        <label for="id_password">Hasło:</label>
         {{ form.password }}
-        <!--<label for="id_confirmpassword">Powtórz hasło:</label>-->
+        <label for="id_confirmpassword">Powtórz hasło:</label>
         {{ form.confirmpassword }}
         <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
 
