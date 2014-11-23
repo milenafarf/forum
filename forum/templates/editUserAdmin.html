@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+
+{% block title %}Admin - edycj danych {% endblock %}
+
 {% block body %}
 <div class="media">
     <div class="media-body">
@@ -9,13 +12,19 @@
         {{ form.login }}
         <label for="id_email">Email:</label>
         {{ form.email }}
-        <label for="id_password">Zablokowany:</label>
-        <label>{{ form.ban }} ban</label>
-        <label for="id_confirmpassword">Rodzaj użytkownika</label>
+        <label for="id_ban">Zablokowany:</label>
+        <div class="checkbox">
+          <label>
+            {{ form.ban }} ban
+          </label>
+        </div>
+        <label for="id_type">Rodzaj użytkownika</label>
         {{ form.type }}
         <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
 
+
         <button class="btn btn-lg btn-primary btn-block" type="submit">Zmień dane</button>
+        <button class="btn btn-lg btn-default btn-block" type="reset">Anuluj</button>
       </form>
     </div>
 </div>

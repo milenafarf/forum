@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Wątek{% endblock %}
+
 {% block body %}
 
 
@@ -11,35 +13,45 @@
       </a>
 
       <div class="media-body">
-        <h3 class="media-heading">title: {{thread.title}}
-            <div class="btn-group">
-              <button type="button" class="btn btn-default btn-sm">  <span class="glyphicon glyphicon-edit"></span>
-              Edytuj </button>
-              <button type="button" class="btn btn-default btn-sm">  <span class="glyphicon glyphicon-remove"></span>
-              Usuń </button>
-            </div>
+        <h3 class="media-heading">{{thread.title}}
+
+            {% if request.session.userId and thread.user.id == request.session.userId or request.session.admin %}
+            <a href="{% url 'editThread' thread.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span> Edytuj</a>
+            <a href="{% url 'delThread' thread.id %}" class="btn"><span class="glyphicon glyphicon-trash"></span> Usuń</a>
+            {% endif %}
         </h3>
-        content: {{thread.content}}
-        <p>
-             {% if session.request.login %}<a href="#"><span class="badge badge-green">Odpowiedz</span></a> {% endif %}
-             <span class="glyphicon glyphicon-lg glyphicon-thumbs-up ">12 </span>
-        </p>
+        <h6>Dodane przez <span class="badge badge-xs">{{thread.user}}</span>, {{thread.date_created}}</h6>
+        <p class="content">{{thread.content}}</p>
+        <div>
+            <div class="odp"><a href="#"><span class="badge badge-green">Odpowiedz</span></a></div>
+            <div class="divider2">·</div>
+            <div class="odp">liczba odpowiedzi: {{ thread.response|length }} </div>
+            <div class="divider2">·</div>
+            <div class="odp"><span class="glyphicon glyphicon-lg glyphicon-thumbs-up "></span> {{thread.rating|length}}</div>
+            {% if request.session.login or request.session.admin %}
+            <div class="report">
+               <a href="{% url 'reportThread' thread.id %}"><span class="glyphicon glyphicon glyphicon-flag" aria-label="zgłoś"></span> Zgłoś</a>
+            </div>
+            {% endif %}
+        </div>
+        {% if request.session.login or request.session.admin %}
+
+
 
           <!--formularz do odpowiedzi-->
         <div class="media">
           <div class="media-body">
-            <form class="form-respons" role="form" method="post">
-                <!--<textarea rows="4" type="text" class="form-control" required="" autofocus="" name="key"></textarea>-->
-                <!--<p><button class="btn btn-primary btn-sm" type="submit">odpowiedz</button></p>-->
-
+            <form class="form-response" role="form" method="post">
                 {% csrf_token %}
-                {{ form }}
-                 <input type="submit" class="btn btn-primary btn-sm" value="Odpowiedz">
+                {{ form.content }}
+                 <!--<input type="submit" class="btn btn-primary btn-sm" value="Odpowiedz">-->
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Odpowiedz</button>
             </form>
           </div>
         </div>
-            liczba odpowiedzi: {{ thread.response|length }}
-          {% for r in thread.response %}
+        {% endif %}
+
+          {% for r in responses %}
 
           <div class="panel panel-default">
   <div class="panel-body">
@@ -51,9 +63,14 @@
 
           <div class="media-body">
 
-            <h4 class="media-heading">aaaaaaaaaa {{r.user.email}}</h4>
+            <h4 class="media-heading"> {{r.user.login }}</h4>
             {{r.content}}
             Odpowiedział(a): {{r.user}}
+              {% if request.session.login or request.session.admin %}
+            <div class="report">
+               <a href="{% url 'reportResponse' r.id %}"><span class="glyphicon glyphicon glyphicon-flag" aria-label="zgłoś"></span> Zgłoś</a>
+            </div>
+            {% endif %}
 
           </div>
           </div>
@@ -61,6 +78,24 @@
           {% endfor %}
       </div>
 </div>
+
+<!--page navigation-->
+    <nav>
+    <ul class="pager">
+
+        {% if responses.has_previous %}
+        <li><a href="?page={{ responses.previous_page_number }}">poprzednia</a></li>
+        {% endif %}
+
+        <span class="current">
+        Strona {{ responses.number }} z {{ responses.paginator.num_pages }}.
+        </span>
+
+        {% if responses.has_next %}
+        <li><a href="?page={{ responses.next_page_number }}">następna</a></li>
+        {% endif %}
+    </ul>
+  </nav>
 
 {% endblock %}
 

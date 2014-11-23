@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+
+{% block title %}Strona główna{% endblock %}
+
 {% block body %}
 
 
@@ -18,7 +21,6 @@
 
 
           </div>
-     <!--<p><a href="{% url 'newThread' %}" class="btn btn-success btn-lg" role="button">Dodaj wątek</a></p>-->
 
 
     <h1>Najnowsze wątki.</h1>
@@ -33,13 +35,26 @@
                         <ul class="media-list">
                           <li class="media">
                             <a class="pull-left" href="#">
-                              <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="...">
+                              <img class="media-object" src="{{ STATIC_URL }}64x64.jpg" alt="{{t.user.login}}">
                             </a>
                             <div class="media-body">
                               <h4 class="media-heading"><a href="{% url 'thread' t.id %}">{{ t.title }}</a> </h4>
                               <h6>Dodane przez <span class="badge badge-xs">{{t.user}}</span>, {{t.date_created}}</h6>
-                              {{t.content}}
-                                 <span class="glyphicon glyphicon-thumbs-up">12 </span>
+
+                              <p class="content">{{t.content}}</p>
+
+                              <div>
+                                <div class="odp">liczba odpowiedzi: {{ t.response|length }} </div>
+                                <div class="divider2">·</div>
+                                <div class="odp"><span class="glyphicon glyphicon-lg glyphicon-thumbs-up "></span>
+                                    {{thread.rating|length}}</div>
+
+                                  {% if request.session.login %}
+                                <div class="report">
+                                   <a href="{% url 'reportThread' t.id %}"><span class="glyphicon glyphicon glyphicon-flag" aria-label="zgłoś"></span> Zgłoś</a>
+                                </div>
+                                {% endif %}
+                              </div>
                             </div>
                           </li>
                         </ul>

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+
+
+<div class="profile">
+    <div calss = "image">
+        <img src="{{ STATIC_URL }}64x64.jpg" alt="{{usr.login}}">
+    </div>
+    <div class="details">
+        <h3>{{usr.login}}</h3>
+        <p><b>Dołączył(a):</b> {{ usr.date_created|date:"d E, H:i" }}</p>
+        <p><b>Profil ostatnio modyfkowany:</b> {{ usr.last_update|date:"d E, H:i" }} </p>
+        <p><b>Ban:</b> {%if usr.ban == False %} Nie {% else %} Tak {% endif %} </p>
+    </div>
+
+</div>
+
+
+{% endblock %}

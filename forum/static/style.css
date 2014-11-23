@@ -11,6 +11,42 @@ body {
   padding: 15px;
   margin: 0 auto;
 }
+.form-newthread {
+  max-width: 550px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-response {
+    margin-bottom: 10px;
+}
+.form-response textarea[id]{
+    margin-bottom: 10px;
+}
+
+.profile{
+    max-width: 700px;
+    padding: 100px;
+    margin: 0 auto;
+    font-size: 16px;
+    text-align: center;
+}
+
+
+
+p.content {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+p.info {
+    font-style: italic;
+}
+
+div.alert {
+    text-align: center;
+}
 
 .form-thread {
   max-width: 430px;
@@ -26,11 +62,19 @@ body {
   margin-bottom: 10px;
 }
 
+.form-newthread input, textarea, select {
+  margin-bottom: 10px;
+}
+
+.form-newthread textarea {
+    height: 200px;
+}
+
 .form-signup input[id] {
   margin-bottom: 10px;
 }
 
-.form-signin .form-control, .form-signup .form-control, .form-thread .form-control {
+.form-signin .form-control, .form-signup .form-control, .form-thread .form-control, .form-response .form-control,  {
     position: relative;
     height: auto;
     -webkit-box-sizing: border-box;
@@ -38,4 +82,24 @@ body {
     box-sizing: border-box;
     padding: 10px;
     font-size: 16px;
+}
+
+.odp, .report {
+    display: inline-block;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 2px;
+}
+
+.report {
+    margin-left:auto;
+    margin-right:0;
+    float: right !important;
+}
+
+.divider2 {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 12px;
 }

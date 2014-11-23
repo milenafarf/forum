@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Admin - użytkownicy{% endblock %}
+
 {% block body %}
 <div class="panel panel-default">
   <div class="panel-heading">Zarządzaj użytkownikami</div>
@@ -26,9 +28,9 @@
             <td width="30%">{{ u.email }}</td>
             <td width="10%">{{ u.ban }}</td>
             <td width="10%">{{ u.type }}</td>
-            <td><a href="{% url 'editUser' u.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td><a href="{% url 'editUserAdmin' u.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
             <td>
-              <a href="{% url 'delUser' u.id %}" class="btn"><span class="glyphicon glyphicon-remove"></span></a>
+              <a href="{% url 'delUserAdmin' u.id %}" class="btn"><span class="glyphicon glyphicon-remove"></span></a>
             </td>
         </tr>
     {% endfor %}

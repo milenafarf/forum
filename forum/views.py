@@ -2,11 +2,11 @@ __author__ = 'Milena Farfulowska'
 
 from django.http import HttpResponse
 from django.template import loader, RequestContext
-from forum.models import Category, Thread, User
+from forum.models import Category, User
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from forum.forms import ThreadForm, UserForm1, UserForm2, ResponseForm
-from forum.models import Thread, Response
+from forum.models import Thread, Response, ReportedThreads, ReportedResponses
 from django.shortcuts import render_to_response, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -24,6 +24,21 @@ def home(request):
     popular = Thread.objects.order_by('rating', 'date_created')
     context = RequestContext(request, {
         'threads': threads,
+        'categories': categories,
+        'popular': popular
+    })
+    return HttpResponse(template.render(context))
+
+def userProfile(request, id):
+    try:
+        usr = User.objects.get(id=id)
+    except User.DoesNotExist:
+        return HttpResponseRedirect('/error/1/')
+    template = loader.get_template('userProfile.html')
+    categories = Category.objects.all()
+    popular = Thread.objects.order_by('rating', 'date_created')
+    context = RequestContext(request, {
+        'usr': usr,
         'categories': categories,
         'popular': popular
     })
@@ -60,7 +75,7 @@ def category(request, id):
     except Category.DoesNotExist:
         return HttpResponseRedirect('/error/1/')
     threadsList = Thread.objects.filter(category__id=id).order_by('-date_created')
-    paginator = Paginator(threadsList, 25)
+    paginator = Paginator(threadsList, 15)
     page = request.GET.get('page')
     try:
         threads = paginator.page(page)
@@ -77,9 +92,11 @@ def category(request, id):
     })
     return HttpResponse(template.render(context))
 
-def thread(request, id=-1):
-    if id != -1:
-        thread = Thread.objects.filter(id=id)
+def thread(request, id):
+    try:
+        thread = Thread.objects.get(id=id)
+    except Thread.DoesNotExist:
+        return HttpResponseRedirect('/error/1/')
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = ResponseForm(request.POST)
@@ -103,40 +120,34 @@ def thread(request, id=-1):
             thread = Thread.objects.get(id=id)
             thread.response.append(resp)
             thread.save()
-            # Thread.objects.raw_update({ '_id': ObjectId(id) },{
-            #     '$push' : {
-            #         'response':
-	         #        { 'content' : cont ,
-	         #            'user' : {'_id' : ObjectId(str(u_id)) }
-            #         }
-            #
-            #         }
-            #     })
-
-
-            # form.save()
-            # thr.response.content
-            # thr.save()
             # redirect to a new URL:
             return HttpResponseRedirect('/thread/' + id)
     else:
         form = ResponseForm()
-        if id != -1:
-            thread = Thread.objects.get(id=id)
-        template = loader.get_template('thread.html')
-        context = RequestContext(request, {
-        'thread': thread,
-        })
-    # return HttpResponse(template.render(context))
+        responsesList = thread.response
+        paginator = Paginator(responsesList, 15)
+        page = request.GET.get('page')
+        try:
+            responses = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            responses = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            responses = paginator.page(paginator.num_pages)
     categories = Category.objects.all()
     return render(request, 'thread.html',
-                  {'form': form, 'thread': thread, 'categories': categories, })
+                  {'form': form, 'thread': thread,'responses': responses, 'categories': categories, })
 
 def newThread(request):
     if request.method == 'POST': # If the form has been submitted...
         form = ThreadForm(request.POST) # A form bound to the POST data
+        if 'login' in request.session:
+                usr = User.objects.get(login= request.session['login'])
+        else:
+            return HttpResponseRedirect('/error/2/')
         if form.is_valid(): # All validation rules pass
-            usr = User.objects.get(login= request.session['login'])
+
             thread = Thread(
                 title= form.cleaned_data['title'],
                 content = form.cleaned_data['content'],
@@ -159,19 +170,60 @@ def delThread(request, id):
     if 'login' in request.session:
         lg = request.session['login']
     else:
-        HttpResponseRedirect('/error/2/')
+        return HttpResponseRedirect('/error/2/')
     try:
         thrd = Thread.objects.get(id=id)
         usr = User.objects.get(login = lg)
     except:
-        HttpResponseRedirect('/error/1/')
+        return HttpResponseRedirect('/error/1/')
+
     if usr.type == 'admin':
         thrd.delete()
+    # is user author of this post?
     elif usr.lg == thrd.user.id:
         thrd.delete()
     else:
-        HttpResponseRedirect('/error/2/')
-    HttpResponseRedirect('/success/3/')
+        return HttpResponseRedirect('/error/2/')
+    return HttpResponseRedirect('/success/3/')
+
+def editThread(request, id):
+    categories = Category.objects.all()
+    if 'userId' in request.session:
+        try:
+            usr = request.session['userId']
+            us = User.objects.get(id=usr)
+            thrd = Thread.objects.get(id=id)
+        except User.DoesNotExist or Thread.DoesNotExist:
+            return HttpResponseRedirect('/error/1/')
+    else:
+        return HttpResponse('/error/2/')
+    form = ThreadForm(request.POST or None, instance=thrd)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('/thread/' + id)
+    else:
+        return render_to_response('editThread.html', RequestContext(request, {'form': form, 'categories': categories}))
+
+def reportThread(request, id):
+    if 'userId' in request.session:
+        try:
+            usr = request.session['userId']
+            us = User.objects.get(id=usr)
+            thrd = Thread.objects.get(id=id)
+        except User.DoesNotExist or Thread.DoesNotExist:
+            return HttpResponseRedirect('/error/1/')
+    else:
+        return HttpResponseRedirect('/error/2/')
+    try:
+        reported = ReportedThreads (
+            thread = thrd,
+            user = us
+        )
+        reported.save()
+        return HttpResponseRedirect('/info/1/')
+    except:
+        return HttpResponseRedirect('/error/3/')
+
 
 def signUp(request):
     categories = Category.objects.all()
@@ -187,6 +239,7 @@ def signUp(request):
                 else:
                     form.save()
                     return HttpResponseRedirect('/success/2')
+
             else:
                 message = "hasla sie nie zgadzaja"
 
@@ -198,6 +251,36 @@ def signUp(request):
         'categories' : categories,
         'message': message
     })
+
+def response(request, id):
+    return HttpResponseRedirect('/info/6/')
+
+def editResponse(request, id):
+    return HttpResponseRedirect('/info/6/')
+
+def delResponse(request, id):
+    return HttpResponseRedirect('/info/6/')
+
+def reportResponse(request, id):
+    if 'userId' in request.session:
+        try:
+            usr = request.session['userId']
+            us = User.objects.get(id=usr)
+            resp = Response.objects.get(id=id)
+        except User.DoesNotExist or Response.DoesNotExist:
+            return HttpResponseRedirect('/error/1/')
+    else:
+        return HttpResponseRedirect('/error/2/')
+    try:
+        reported = ReportedResponses (
+            response = resp,
+            user = us
+        )
+        reported.save()
+        return HttpResponseRedirect('/info/1/')
+    except:
+        return HttpResponseRedirect('/error/3/')
+
 
 def signIn(request):
     categories = Category.objects.all()
@@ -215,9 +298,11 @@ def signIn(request):
                 return render(request, 'signIn.html', {'form': form, 'categories': categories,'message': message})
             request.session['userId'] = str(us.id)
             request.session['login'] = str(us.login)
+            if us.ban:
+                request.session['ban'] = True
             if us.type == "admin":
                 request.session['admin'] = str(us.login)
-            if not form.cleaned_data['ban']:
+            if not form.cleaned_data['rememberMe']:
                 request.session.set_expiry(0)
             # request.session['type'] = us.type
             return HttpResponseRedirect('/')
@@ -227,11 +312,12 @@ def signIn(request):
     return render(request, 'signIn.html', {'form': form, 'categories': categories, 'message': message})
 
 def editUser(request):
+    categories = Category.objects.all()
     if 'userId' in request.session:
         try:
             usr = request.session['userId']
             us = User.objects.get(id=usr)
-        except User.DoesNorExist:
+        except User.DoesNotExist:
             return HttpResponseRedirect('/error/1/')
     else:
         return HttpResponse('/error/2/')
@@ -240,13 +326,17 @@ def editUser(request):
         form.save()
         return redirect('/success/1/')
     else:
-        return render_to_response('editUser.html', RequestContext(request, {'form': form, 'user': us}))
+        return render_to_response('editUser.html', RequestContext(request, {'form': form, 'categories': categories}))
 
 def delUser(request, id):
-    if 'admin' in request.session:
+    if 'userId' in request.session:
         try:
             usr = User.objects.get(id=id)
-            usr.delete()
+            usr2 = User.objects.get(id=request.session['userId'])
+            if usr.id == usr2.id:
+                usr.delete()
+            else:
+                HttpResponseRedirect('/error/2')
             return HttpResponseRedirect('/success/3')
         except User.DoesNotExist:
             return HttpResponseRedirect('/error/1')
@@ -257,6 +347,9 @@ def logOut(request):
     if 'userId' and 'login' in request.session:
         del request.session["userId"]
         del request.session["login"]
+        request.session.modified = True
+    if 'ban' in request.session:
+        del request.session["ban"]
         request.session.modified = True
     if 'admin' in request.session:
         del request.session['admin']
@@ -285,8 +378,24 @@ def error(request, msg):
         message = "Wystapil blad podczas pobierania dnaych z bazy."
     if msg =='2':
         message = "Brak uprawnien."
+    if msg == '3':
+        message = "Blad poczas zapisu danych"
     template = loader.get_template('error.html')
     categories = Category.objects.all()
+    context = RequestContext(request, {
+        'categories': categories,
+        'message': message
+    })
+    return HttpResponse(template.render(context))
+
+def info(request, msg):
+    message = ""
+    if msg == '1':
+        message = "Watek zgloszony."
+    if msg == '6':
+        message = "ta metoda jeszcze nie dziala"
+    categories = Category.objects.all()
+    template = loader.get_template('info.html')
     context = RequestContext(request, {
         'categories': categories,
         'message': message

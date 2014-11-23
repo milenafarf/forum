@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - kategorie{% endblock %}
+
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">Zarządzaj użytkownikami</div>
+  <form class="form-response" role="form" method="post">
+                {% csrf_token %}
+                {{ form.name }}
+                 <!--<input type="submit" class="btn btn-primary btn-sm" value="Odpowiedz">-->
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Dodaj</button>
+            </form>
+  <!-- Table -->
+  <table class="table">
+    <thead>
+        <tr>
+            <td></td>
+            <td><b>nazwa</b></td>
+            <td><b>edytuj</b></td>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for c in categories %}
+        <tr>
+            <td></td>
+            <td width="30%">{{ c.name }}</td>
+            <td><a href="{% url 'editCategoryAdmin' c.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+{% endblock %}

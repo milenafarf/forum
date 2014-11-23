@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Posty wg kategorii{% endblock %}
 {% block body %}
     <h1>Przeglądaj wątki w kategorii <b>{{threads.0.category.name}}</b> </h1>
     <!--{% for t in threads%}-->
@@ -23,7 +24,7 @@
                             <div class="media-body">
                               <h4 class="media-heading"><a href="{% url 'thread' t.id %}">{{ t.title }}</a> </h4>
                               <h6>Dodane przez <span class="badge badge-xs">{{t.user}}</span>, {{t.date_created}}</h6>
-                              {{t.content}}
+                              <p class="content"> {{t.content}} </p>
                                  <span class="glyphicon glyphicon-thumbs-up">12 </span>
                             </div>
                           </li>

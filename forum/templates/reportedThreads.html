@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - zgłoszone wątki{% endblock %}
+
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">Zgłoszone wątki</div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+        <tr>
+            <td></td>
+            <td><b>użytkownik</b></td>
+            <td><b>wątek</b></td>
+            <td><b>Oznacz jako sprawdzony</b></td>
+            <td><b>edytuj</b></td>
+            <td><b>usuń</b></td>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for t in threads %}
+        <tr>
+            <td></td>
+            <td width="20%">{{ t.user.login }}</td>
+            <td width="60%"><b><a href="{% url 'thread' t.thread.id %}" >{{ t.thread.title|truncatewords:12 }}</a></b>
+                <p>{{ t.thread.content|truncatewords:25 }}</p>
+            </td>
+            <td width="10%"><a href="{% url 'setOkThread' t.id %}" class="btn"><span class="glyphicon glyphicon-ok"></span></a></td>
+            <td><a href="{% url 'editThread' t.thread.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td>
+              <a href="{% url 'delThread' t.thread.id %}" class="btn"><span class="glyphicon glyphicon-remove"></span></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+<nav>
+    <ul class="pager">
+
+        {% if threads.has_previous %}
+        <li><a href="?page={{ threads.previous_page_number }}">previous</a></li>
+        {% endif %}
+
+        <span class="current">
+        Strona {{ threads.number }} z {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if users.has_next %}
+        <li><a href="?page={{ threads.next_page_number }}">next</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+
+
+{% endblock %}

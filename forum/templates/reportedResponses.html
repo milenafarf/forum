@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - zgłoszone odpowiedzi{% endblock %}
+
+{% block body %}
+<div class="panel panel-default">
+  <div class="panel-heading">Zgłoszone odpowiedzi</div>
+
+  <!-- Table -->
+  <table class="table">
+    <thead>
+        <tr>
+            <td></td>
+            <td><b>Zgłoszone przez</b></td>
+            <td><b>odpowiedź</b></td>
+            <td><b>Oznacz jako sprawdzoną</b></td>
+            <td><b>edytuj</b></td>
+            <td><b>usuń</b></td>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for r in responses %}
+        <tr>
+            <td></td>
+            <td width="20%">{{ r.user.login }}</td>
+            <td width="60%">
+                <p><a href="{% url 'response' r.response.id %}" >{{ r.response.content|truncatewords:12 }}</a></p>
+                <p>Dodany przez : {{ r.response.user.login }}</p>
+            </td>
+            <td width="10%"><a href="{% url 'setOkResponse' r.id %}" class="btn"><span class="glyphicon glyphicon-ok"></span></a></td>
+            <td><a href="{% url 'editResponse' r.response.id %}" class="btn"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td>
+              <a href="{% url 'delResponse' r.response.id %}" class="btn"><span class="glyphicon glyphicon-remove"></span></a>
+            </td>
+    {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+<nav>
+    <ul class="pager">
+
+        {% if threads.has_previous %}
+        <li><a href="?page={{ threads.previous_page_number }}">previous</a></li>
+        {% endif %}
+
+        <span class="current">
+        Strona {{ threads.number }} z {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if users.has_next %}
+        <li><a href="?page={{ threads.next_page_number }}">next</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+
+
+{% endblock %}

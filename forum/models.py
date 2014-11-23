@@ -62,6 +62,19 @@ class Thread(models.Model):
     def __unicode__ (self):
         return self.title
 
+class ReportedThreads(models.Model):
+    thread = models.ForeignKey(Thread)
+    user = models.ForeignKey(User) # who reported this thread
+
+class ReportedResponses(models.Model):
+    response = models.ForeignKey(Response)
+    user = models.ForeignKey(User) # who reported this response
+
+
+class notification(models.Model):
+    user = models.ForeignKey(User)
+    content = models.TextField()
+    read = models.BooleanField(default=False)
 
 
 

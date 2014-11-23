@@ -1,4 +1,4 @@
 project/settings.py
-project/settings.py
+*.pyc
 key.txt
 .idea/

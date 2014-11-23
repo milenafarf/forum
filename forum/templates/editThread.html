@@ -1,23 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Nowy wątek{% endblock %}
+{% block title %}Edycja danych{% endblock %}
 
 {% block body %}
     <div class="media">
     <div class="media-body">
       <form class="form-newthread" role="form" method="post">
         {% csrf_token %}
-        <h2 class="form-signin-heading">Dodaj wątek</h2>
+        <h2 class="form-signin-heading">Edytuj wątek</h2>
         <label for="id_tytul">Tytuł:</label>
         {{ form.title }}
         <label for="id_tresc">Treść:</label>
         {{ form.content }}
         <label for="id_tresc">Kategoria:</label>
         {{ form.category }}
-        <center><h4><span class="label label-danger label-lg">{{message}}</span></h4></center>
-
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Dodaj wątek</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Zmień dane</button>
         <button class="btn btn-lg btn-default btn-block" type="reset">Anuluj</button>
+
       </form>
     </div>
 </div>
